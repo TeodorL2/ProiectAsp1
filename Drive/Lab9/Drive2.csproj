@@ -35,7 +35,7 @@
   <ItemGroup>
     <Folder Include="ClientApp\src\app\core\guards\" />
     <Folder Include="ClientApp\src\app\core\interceptors\" />
-    <Folder Include="Services\" />
+    <Folder Include="StorageManagement\StorageRoot\" />
   </ItemGroup>
 
     <Target Name="DebugEnsureNodeEnv" BeforeTargets="Build" Condition=" '$(Configuration)' == 'Debug' And !Exists('$(SpaRoot)node_modules') ">

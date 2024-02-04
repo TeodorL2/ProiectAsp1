@@ -14,10 +14,12 @@ namespace Drive.UnitOfWork
         private UserRepository _userRepository;
         private BaseDirectoryRepository _baseDirectoryRepository;
         private DirectoryDescRepository _directoryDescRepository;
+        private readonly IWebHostEnvironment _hostEnvironment;
 
-        public UnitOfWork(DriveContext driveContext)
+        public UnitOfWork(DriveContext driveContext, IWebHostEnvironment hostEnvironment)
         {
             _driveContext = driveContext;
+            _hostEnvironment = hostEnvironment;
         }
 
         public UserRepository UserRepository
@@ -39,7 +41,7 @@ namespace Drive.UnitOfWork
             {
                 if (_baseDirectoryRepository == null)
                 {
-                    _baseDirectoryRepository = new BaseDirectoryRepository(_driveContext);
+                    _baseDirectoryRepository = new BaseDirectoryRepository(_driveContext, _hostEnvironment);
                     return _baseDirectoryRepository;
                 }
                 else { return _baseDirectoryRepository; }

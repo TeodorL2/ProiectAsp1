@@ -18,6 +18,7 @@ import { AuthenticationService } from './core/services/authentication.service';
 import {CommonModule} from "@angular/common";
 import { HttpClientModule } from '@angular/common/http';
 import { JwtModule } from "@auth0/angular-jwt";
+import { EntriesComponent } from "./components/entries/entries.component";
 
 export function tokenGetter() {
   return localStorage.getItem("jwt");
@@ -31,7 +32,8 @@ export function tokenGetter() {
     FetchDataComponent,
     CounterComponent,
     HomeComponent,
-    NavMenuComponent
+    NavMenuComponent,
+    EntriesComponent,
   ],
   exports: [ChildComponent],
   imports: [
@@ -52,7 +54,8 @@ export function tokenGetter() {
       { path: 'fetch-data', component: FetchDataComponent },
       { path: 'register', component: RegisterComponent },
       { path: 'login', component: LoginComponent },
-      { path: 'routing', canActivate: [AuthGuard],component: ParentComponent }
+      { path: 'routing', canActivate: [AuthGuard], component: ParentComponent },
+      { path: 'storage/:path', component: EntriesComponent}
     ])
   ],
   providers: [AuthenticationService],

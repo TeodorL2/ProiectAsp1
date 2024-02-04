@@ -14,6 +14,7 @@ builder.Services.AddServices();
 builder.Services.AddHelpers();
 builder.Services.Configure<AppSettings>(builder.Configuration.GetSection("AppSettings"));
 
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -27,6 +28,14 @@ if (!app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseRouting();
+
+app.UseCors(options =>
+{
+    options.AllowAnyHeader();
+    options.AllowAnyOrigin();
+    options.AllowAnyMethod();
+});
+
 app.UseMiddleware<JwtMiddleware>();
 
 app.MapControllerRoute(

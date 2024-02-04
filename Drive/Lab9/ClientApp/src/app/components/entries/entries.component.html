@@ -1,0 +1,11 @@
+<p>entries works!</p>
+
+<div>
+  <h2>Entries for Path: {{ path }}</h2>
+
+  <ul>
+    <li *ngFor="let entry of entries">
+      {{ entry.fileName }} - {{ entry.isDir ? 'Folder' : 'File' }}
+    </li>
+  </ul>
+</div>

@@ -1,6 +1,7 @@
 ﻿using Drive.Helpers.JwtUtil;
 using Drive.UnitOfWork;
 using Drive.Services.UserService;
+using Drive2.Services.DirectoryService;
 
 namespace Drive.Helpers.Extensions
 {
@@ -15,6 +16,7 @@ namespace Drive.Helpers.Extensions
         public static IServiceCollection AddServices(this IServiceCollection services)
         {
             services.AddTransient<IUserService, UserService>();
+            services.AddTransient<IDirectoryService, DirectoryService>();
             return services;
         }
 
