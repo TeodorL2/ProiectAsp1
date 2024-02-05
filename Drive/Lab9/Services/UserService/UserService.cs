@@ -6,6 +6,8 @@ using Drive.UnitOfWork;
 using BCryptNet = BCrypt.Net.BCrypt;
 using Microsoft.AspNetCore.Identity;
 using Drive.Data.DTOs.UserDto;
+using Drive2.Data.DTOs.BaseDirectoryDto;
+using Drive2.Data.DTOs;
 
 namespace Drive.Services.UserService
 {
@@ -51,5 +53,12 @@ namespace Drive.Services.UserService
             _unitOfWork.UserRepository.Create(userToCreate);
             return await _unitOfWork.SaveAsync();
         }
+
+        public async Task<List<BaseDirectoryDto>> GetAllWithPermission(Guid UserId)
+        {
+            return await _unitOfWork.UserRepository.GetAllWithPermission(UserId);
+        }
+
+        
     }
 }

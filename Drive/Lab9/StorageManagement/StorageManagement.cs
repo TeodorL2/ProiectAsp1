@@ -26,34 +26,24 @@ namespace Drive2.StorageManagement
 
             if(Directory.Exists(fullPath))
             {
-                rez = EntriesRec(fullPath);
-            }
-
-            return rez;
-        }
-
-
-        private List<EntryStruct> EntriesRec(string path)
-        {
-            List<EntryStruct> rez = new List<EntryStruct>();
-
-            try
-            {
-                foreach(string i in Directory.GetDirectories(path))
+                try
                 {
-                    DirectoryInfo directoryInfo = new DirectoryInfo(Path.Combine(path, i));
-                    rez.Add(new EntryStruct(directoryInfo.Name, true, directoryInfo.CreationTime, directoryInfo.LastWriteTime));
-                }
+                    foreach (string i in Directory.GetDirectories(fullPath))
+                    {
+                        DirectoryInfo directoryInfo = new DirectoryInfo(Path.Combine(fullPath, i));
+                        rez.Add(new EntryStruct(directoryInfo.Name, true, directoryInfo.CreationTime, directoryInfo.LastWriteTime));
+                    }
 
-                foreach (string i in Directory.GetFiles(path))
-                {
-                    FileInfo fileInfo = new FileInfo(Path.Combine(path, i));
-                    rez.Add(new EntryStruct(fileInfo.Name, false, fileInfo.CreationTime, fileInfo.LastWriteTime));
+                    foreach (string i in Directory.GetFiles(fullPath))
+                    {
+                        FileInfo fileInfo = new FileInfo(Path.Combine(fullPath, i));
+                        rez.Add(new EntryStruct(fileInfo.Name, false, fileInfo.CreationTime, fileInfo.LastWriteTime));
+                    }
                 }
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine("Error EntriesRec " + ex.Message);
+                catch (Exception ex)
+                {
+                    Console.WriteLine("Error EntriesRec " + ex.Message);
+                }
             }
 
             return rez;

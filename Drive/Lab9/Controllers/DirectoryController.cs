@@ -1,4 +1,6 @@
 ﻿using Drive.Data.DTOs.UserDto;
+using Drive.Data.Enums;
+using Drive.Data.Models;
 using Drive.Helpers.Attributes;
 using Drive.Services.UserService;
 using Drive2.Services.DirectoryService;
@@ -21,11 +23,17 @@ namespace Drive2.Controllers
             Console.WriteLine("DirectoryController [controller] was built");
         }
 
-        [EnableCors]
+        // [EnableCors]
+        [Authorize(Role.Admin, Role.User)]
         [HttpGet("{*path}")]
         public IActionResult GetEntries(string path)
         {
-            var response = _directoryService.GetEntries(path);
+            User? authorizedUser = HttpContext.Items["AuthorizedUser"] as User;
+            Guid? userId;
+            if(authorizedUser == null) { userId = null; }
+            else
+            {  userId = authorizedUser.Id; }
+            var response = _directoryService.GetByPath(path, userId);
             Console.WriteLine("DirectoryController");
             if (response == null)
             {
@@ -34,5 +42,63 @@ namespace Drive2.Controllers
 
             return Ok(response);
         }
+
+        [Authorize(Role.Admin, Role.User)]
+        [HttpPost("{*path}")]
+        public IActionResult CreateDir([FromRoute]string path, [FromBody]string newDirName)
+        {
+            User? authorizedUser = HttpContext.Items["AuthorizedUser"] as User;
+            Guid? userId;
+            if (authorizedUser == null) { userId = null; }
+            else
+            { userId = authorizedUser.Id; }
+
+            var response = _directoryService.CreateDirectory(path, userId, newDirName);
+            if (response == null)
+            {
+                return BadRequest();
+            }
+
+            return Ok(response);
+        }
+
+        [Authorize(Role.Admin, Role.User)]
+        [HttpDelete("{*path}")]
+        public IActionResult Delete([FromRoute] string path)
+        {
+            User? authorizedUser = HttpContext.Items["AuthorizedUser"] as User;
+            Guid? userId;
+            if (authorizedUser == null) { userId = null; }
+            else
+            { userId = authorizedUser.Id; }
+
+            var response = _directoryService.Delete(path, userId);
+            if (response == null)
+            {
+                return BadRequest();
+            }
+
+            return Ok(response);
+        }
+
+        [Authorize(Role.Admin, Role.User)]
+        [HttpPut("{*path}")]
+        public IActionResult Rename([FromRoute] string path, [FromBody] string newName)
+        {
+            User? authorizedUser = HttpContext.Items["AuthorizedUser"] as User;
+            Guid? userId;
+            if (authorizedUser == null) { userId = null; }
+            else
+            { userId = authorizedUser.Id; }
+
+            var response = _directoryService.Rename(path, userId, newName);
+            if (response == null)
+            {
+                return BadRequest();
+            }
+
+            return Ok(response);
+        }
+
     }
 }

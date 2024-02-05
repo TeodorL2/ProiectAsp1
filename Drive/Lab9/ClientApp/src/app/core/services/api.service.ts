@@ -9,7 +9,7 @@ export class ApiService {
   private readonly apiUrl: string;
 
   constructor(private readonly httpClient: HttpClient, @Inject('BASE_URL') apiUrl: string) {
-    //this.apiUrl = apiUrl;// + 'api/';
+    // this.apiUrl = apiUrl;// + 'api/';
     this.apiUrl = "https://localhost:7092/";
   }
 

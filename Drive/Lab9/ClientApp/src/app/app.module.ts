@@ -19,6 +19,7 @@ import {CommonModule} from "@angular/common";
 import { HttpClientModule } from '@angular/common/http';
 import { JwtModule } from "@auth0/angular-jwt";
 import { EntriesComponent } from "./components/entries/entries.component";
+import { ClientTimePipe } from './core/pipes/client-time.pipe';
 
 export function tokenGetter() {
   return localStorage.getItem("jwt");
@@ -34,6 +35,7 @@ export function tokenGetter() {
     HomeComponent,
     NavMenuComponent,
     EntriesComponent,
+    ClientTimePipe,
   ],
   exports: [ChildComponent],
   imports: [

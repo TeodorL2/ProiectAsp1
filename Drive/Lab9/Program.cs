@@ -29,12 +29,14 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseRouting();
 
+
 app.UseCors(options =>
 {
     options.AllowAnyHeader();
     options.AllowAnyOrigin();
     options.AllowAnyMethod();
 });
+
 
 app.UseMiddleware<JwtMiddleware>();
 

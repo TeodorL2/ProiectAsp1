@@ -21,10 +21,14 @@ namespace Drive.Helpers.Attributes
             if (allowAnonymous) return;
 
             User? user = context.HttpContext.Items["User"] as User;
-            if (user == null || (_roles.Any() && !_roles.Contains(user.Role)))
+            /*if (user == null || (_roles.Any() && !_roles.Contains(user.Role)))
             {
                 context.Result = new JsonResult(new { message = "Unauthorized" }) { StatusCode = StatusCodes.Status401Unauthorized };
             }
+            else
+            {*/
+                context.HttpContext.Items["AuthorizedUser"] = user;
+            //}
         }
     }
 }
