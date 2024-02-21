@@ -1,0 +1,26 @@
+<div class="navbar">
+  <div>{{ currentFolder }}</div>
+  <button mat-button (click)="navigatePrevDir()">Previous folder</button>
+  <button mat-button *ngIf="!isUserDir()" (click)="createDir()">Create Directory</button>
+  <button mat-button *ngIf="isUserDir()" (click)="createBaseDir()">Create Base Directory</button>
+  <button mat-button *ngIf="!isUserDir()">Upload</button>
+  <button mat-button>Delete this</button>
+  <button mat-button *ngIf="isBaseDir()">Give access to this</button>
+</div>
+
+<app-create-base-dir *ngIf="createBaseDirMenu()"></app-create-base-dir>
+<app-create-dir *ngIf="createDirMenu()"></app-create-dir>
+
+  <div *ngFor="let item of items" class="container" appHighlight>
+    <button mat-button class="half-width" (click) = "navToDir(item.fileName)">
+      <mat-icon *ngIf="item.isDir">folder</mat-icon>
+      <mat-icon *ngIf="!item.isDir">insert_drive_file</mat-icon>
+      <p>{{ item.fileName }}</p>
+    </button>
+    <div class="text">{{ item.dateModified | dateFormatting }}</div>
+    <button mat-icon-button (click)="download()">
+      <mat-icon>cloud_download</mat-icon>
+    </button>
+  </div>
+
+

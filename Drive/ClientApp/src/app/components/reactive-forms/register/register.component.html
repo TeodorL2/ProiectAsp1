@@ -1,0 +1,34 @@
+<!--
+<div>
+  <p>Register</p>
+  <form [formGroup]="registerForm">
+    <input formControlName="userName" placeholder="Username" type="text">
+    <input formControlName="email" placeholder="Email" type="text">
+    <input formControlName="password" placeholder="Password" type="password">
+  </form>
+  <div>
+    <button (click)="register()">Register</button>
+  </div>
+</div>
+-->
+
+
+<form class="register-form" [formGroup]="registerForm">
+  <mat-form-field appearance="fill" (click)="hideInfoBox()">
+    <mat-label>Username</mat-label>
+    <input matInput formControlName="userName" type="text" placeholder="username">
+  </mat-form-field>
+
+  <mat-form-field appearance="fill">
+    <mat-label>Password</mat-label>
+    <input matInput formControlName="password" type="password" placeholder="password">
+  </mat-form-field>
+
+  <div *ngIf="infoBox">
+    {{ accountAlreadyUsed }}
+  </div>
+
+  <button mat-raised-button color="primary" (click)="register()">Register</button>
+</form>
+
+

@@ -1,0 +1,16 @@
+.formDir {
+  display: flex;
+  align-content: space-around;
+  align-items: center;
+  justify-content: flex-start;
+  width: 100vw;
+  padding: 1vw;
+  margin-bottom: 5vw;
+  border-style: none;
+  box-shadow: 0 2px 10px 0 #0000cc;
+}
+
+.formElems
+{
+    width: 40%;
+}

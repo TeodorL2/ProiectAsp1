@@ -1,0 +1,13 @@
+<form class="formDir" [formGroup]="createBaseDirForm">
+    <input class="formElems" matInput formControlName="DirectoryName" type="text" placeholder="Directory name" required>
+
+    <div class="formElems">
+      <input type="radio" id="public" formControlName="IsPublic" value="true" checked>
+      <label for="public">Public</label>
+
+      <input type="radio" id="private" formControlName="IsPublic" value="false">
+      <label for="private">Private</label>
+    </div>
+
+  <button mat-raised-button color="primary" (click)="create()">Create</button>
+</form>

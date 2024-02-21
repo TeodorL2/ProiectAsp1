@@ -1,0 +1,21 @@
+<div class="navbar">
+  <div>{{ currentFolder }}</div>
+  <button mat-button>Previous folder</button>
+  <button mat-button>Create Directory</button>
+  <button mat-button>Upload</button>
+  <button mat-button>Give access to this base directory</button>
+  <button mat-button>Delete this</button>
+</div>
+
+
+<div *ngFor="let item of items" class="container">
+  <button mat-button class="half-width">
+    <mat-icon *ngIf="item.isDir">folder</mat-icon>
+    <mat-icon *ngIf="!item.isDir">insert_drive_file</mat-icon>
+    <p>{{ item.fileName }}</p>
+  </button>
+  <div class="text">{{ item.dateModified | dateFormatting }}</div>
+  <button mat-icon-button (click)="download()">
+    <mat-icon>cloud_download</mat-icon>
+  </button>
+</div>

@@ -1,0 +1,13 @@
+.auth-buttons-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh; /* Setează înălțimea containerului la 100% din înălțimea ferestrei vizibile */
+}
+
+button {
+  margin: 10px;
+  min-width: 200px; /* Setează lățimea minimă a butoanelor */
+  min-height: 50px; /* Setează înălțimea minimă a butoanelor */
+}

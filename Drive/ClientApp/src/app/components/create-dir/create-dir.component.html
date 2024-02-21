@@ -1,0 +1,5 @@
+<form class="formDir" [formGroup]="createDirForm">
+  <input class="formElems" matInput formControlName="DirName" type="text" placeholder="Directory name" required>
+
+  <button mat-raised-button color="primary" (click)="create()">Create</button>
+</form>
