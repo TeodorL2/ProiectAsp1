@@ -10,7 +10,7 @@ namespace Drive.Services.BaseDirService
 
         void UpdateBaseDirectory(string? userName, string oldName, BaseDirCrUpRequestDto req);
 
-        void DeleteBaseDirectory(string? userName, BaseDirCrUpRequestDto req);
+        void DeleteBaseDirectory(string? userName, string dirName);
 
         AccessType GetAccessType(string path, string? username);
 
@@ -26,6 +26,7 @@ namespace Drive.Services.BaseDirService
 
         void DeleteDirectoryOrFile(string path, string? username);
 
+        void DeleteAnyDirectoryOrFile(string path, string? username);
 
         // Access modification
         BaseDirectory? GetByDirNameAndAuthorFromPath(string path);

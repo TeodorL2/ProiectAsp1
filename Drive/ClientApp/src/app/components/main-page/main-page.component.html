@@ -4,12 +4,17 @@
   <button mat-button *ngIf="!isUserDir()" (click)="createDir()">Create Directory</button>
   <button mat-button *ngIf="isUserDir()" (click)="createBaseDir()">Create Base Directory</button>
   <button mat-button *ngIf="!isUserDir()">Upload</button>
-  <button mat-button>Delete this</button>
+  <button mat-button (click)="renameMenu()">Rename this</button>
+  <button mat-button (click)="deleteThisConsent()">Delete this</button>
   <button mat-button *ngIf="isBaseDir()">Give access to this</button>
 </div>
 
 <app-create-base-dir *ngIf="createBaseDirMenu()"></app-create-base-dir>
 <app-create-dir *ngIf="createDirMenu()"></app-create-dir>
+
+<div *ngIf="showRenameMenu">
+
+</div>
 
   <div *ngFor="let item of items" class="container" appHighlight>
     <button mat-button class="half-width" (click) = "navToDir(item.fileName)">
@@ -23,4 +28,12 @@
     </button>
   </div>
 
+
+<div class="deleteConsentMenu" *ngIf="showDeleteConsentMenu">
+  <p>Are you sure you want to permanently delete this item?</p>
+  <div class="deleteConsentMenuButtonContainer">
+  <button mat-button (click)="deleteThis()">Yes</button>
+  <button mat-button (click)="hideDeleteThisCOnsent()">No(cancel)</button>
+  </div>
+</div>
 

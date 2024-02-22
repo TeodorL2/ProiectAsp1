@@ -5,6 +5,7 @@ using Drive.Data.Models;
 using Drive.StorageManagement.StorageManagement;
 using Drive.UnitOfWork;
 using Microsoft.AspNetCore.Http.HttpResults;
+using System.Diagnostics.Eventing.Reader;
 using System.IO.Compression;
 using System.Xml;
 
@@ -67,7 +68,7 @@ namespace Drive.Services.BaseDirService
             _unitOfWork.Save();
         }
 
-        public void DeleteBaseDirectory(string? userName, BaseDirCrUpRequestDto req)
+        public void DeleteBaseDirectory(string? userName, string dirName)
         {
             var user = _unitOfWork.UserRepository.FindByUserName(userName);
             if (user == null)
@@ -75,12 +76,12 @@ namespace Drive.Services.BaseDirService
                 throw new BadUser("user not found by username");
             }
 
-            var baseDir = _unitOfWork.BaseDirectoryRepository.GetByDirNameAndAuthor(req.DirectoryName, user.Id);
+            var baseDir = _unitOfWork.BaseDirectoryRepository.GetByDirNameAndAuthor(dirName, user.Id);
 
             if (baseDir == null) return;
                 // throw new NoSuchFileOrDirectory("path not found");
 
-            string path = Path.Combine(userName, req.DirectoryName);
+            string path = Path.Combine(userName, dirName);
             _unitOfWork.BaseDirectoryRepository.DeleteBaseDirectory(path, baseDir);
 
             _unitOfWork.Save();
@@ -251,6 +252,24 @@ namespace Drive.Services.BaseDirService
                 throw new AccessDenied("base directory can not be deleted from here");
 
             _unitOfWork.BaseDirectoryRepository.DeleteDirectoryOrFile(path);
+        }
+
+        public void DeleteAnyDirectoryOrFile(string path, string? username)
+        {
+            var accessType = GetAccessType(path, username);
+            if ((accessType & AccessType.Write) == 0)
+                throw new AccessDenied("no write priviledge");
+            if (PathIsNotBaseDir(path) == false)
+            {
+                string[] pathParts = path.Split('/');
+                if (pathParts.Length < 2)
+                    throw new NoSuchFileOrDirectory("path is not base directory");
+                DeleteBaseDirectory(username, pathParts[1]);
+            }
+            else
+            {
+                DeleteDirectoryOrFile(path, username);
+            }
         }
 
 

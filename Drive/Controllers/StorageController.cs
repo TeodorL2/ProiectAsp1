@@ -86,7 +86,7 @@ namespace Drive.Controllers
 
         [Authorize(Role.User, Role.Admin)]
         [HttpPut("{*path}")]
-        public IActionResult RenameBaseDir([FromRoute] string path, [FromBody] BaseDirCrUpRequestDto req)
+        public IActionResult UpdateBaseDir([FromRoute] string path, [FromBody] BaseDirCrUpRequestDto req)
         {
             User? authorizedUser = HttpContext.Items["AuthorizedUser"] as User;
 
@@ -117,6 +117,7 @@ namespace Drive.Controllers
             }
         }
 
+        /*
         [Authorize(Role.User, Role.Admin)]
         [HttpDelete("{*path}")]
         public IActionResult DeleteBaseDir([FromBody] BaseDirCrUpRequestDto req)
@@ -143,6 +144,7 @@ namespace Drive.Controllers
                 return BadRequest(ex.Message);
             }
         }
+        */
 
         [Authorize(Role.Admin, Role.User)]
         // [HttpPost("{*path}")]
@@ -175,6 +177,33 @@ namespace Drive.Controllers
             }
 
             return Ok();
+        }
+
+        [Authorize(Role.Admin, Role.User)]
+        [HttpDelete("{*path}")]
+        public IActionResult DeleteItem([FromRoute] string path)
+        {
+            User? authorizedUser = HttpContext.Items["AuthorizedUser"] as User;
+
+            string? username = authorizedUser?.UserName;
+
+            try
+            {
+                _baseDirService.DeleteAnyDirectoryOrFile(path, username);
+                return Ok();
+            }
+            catch(AccessDenied ex)
+            {
+                return Unauthorized(ex.Message);
+            }
+            catch (NoSuchFileOrDirectory ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (Exception ex)
+            { 
+                return BadRequest(ex.Message); 
+            }
         }
     }
 }

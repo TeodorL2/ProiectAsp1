@@ -41,3 +41,21 @@ button[mat-icon-button] {
 mat-icon {
   font-size: 18px;
 }
+
+.deleteConsentMenu {
+  position: absolute;
+  margin: 20vh auto auto 20vw ;
+  display: flex;
+  flex-direction:column;
+  justify-content: center;
+  z-index: 1;
+  width: 60%;
+  box-shadow: 0 0 10px #0000cc;
+  padding: 5vw;
+}
+
+.deleteConsentMenuButtonContainer
+{
+    display: flex;
+    justify-content:space-evenly;
+}

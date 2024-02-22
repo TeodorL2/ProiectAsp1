@@ -11,6 +11,7 @@ import { CreateBaseDirComponent } from '../create-base-dir/create-base-dir.compo
 import { CreateDirComponent } from '../create-dir/create-dir.component';
 import { HighlightDirective } from '../../core/directives/highlight.directive';
 import { filter } from 'rxjs/operators';
+import { DeleteItemService } from '../../core/services/delete-item.service';
 
 @Component({
   selector: 'app-main-page',
@@ -33,7 +34,7 @@ export class MainPageComponent implements OnInit {
   pathToAsk: string = "";
   currentFolder: string = "";
   constructor(private location: Location, private readonly getEntriesService: GetEntriesService, private router: Router,
-              private route: ActivatedRoute) { }
+              private route: ActivatedRoute, private deleteItemService: DeleteItemService) { }
 
   getEntries() {
     this.pathToAsk = this.location.path();
@@ -104,4 +105,36 @@ export class MainPageComponent implements OnInit {
     pathParts.pop();
     this.router.navigate([pathParts.join('/')]);
   }
+
+  showDeleteConsentMenu: boolean = false;
+  deleteThisConsent() {
+    this.showDeleteConsentMenu = true;
+  }
+
+  deleteThis() {
+    var pathParts = this.router.url.split('/');
+    this.deleteItemService.delete(pathParts.join('/')).subscribe(
+      (data: any) => { console.log("deleted successfully")},
+      (error: any) => console.error(error)
+
+    );
+    this.showDeleteConsentMenu = false;
+    // this.router.navigate([this.router.url]);
+  }
+
+  hideDeleteThisCOnsent() {
+    this.showDeleteConsentMenu = false;
+  }
+
+
+  // Rename
+  showRenameMenu: boolean = false;
+
+  renameMenu() {
+    this.showRenameMenu = true;
+  }
+  rename() {
+
+  }
+
 }
