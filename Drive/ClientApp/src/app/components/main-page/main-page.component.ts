@@ -12,6 +12,9 @@ import { CreateDirComponent } from '../create-dir/create-dir.component';
 import { HighlightDirective } from '../../core/directives/highlight.directive';
 import { filter } from 'rxjs/operators';
 import { DeleteItemService } from '../../core/services/delete-item.service';
+import { HttpClient } from '@angular/common/http';
+import { UploadFilesDto } from '../../data/interfaces/upload-files-dto';
+import { UploadFilesService } from '../../core/services/upload-files.service';
 
 @Component({
   selector: 'app-main-page',
@@ -34,7 +37,8 @@ export class MainPageComponent implements OnInit {
   pathToAsk: string = "";
   currentFolder: string = "";
   constructor(private location: Location, private readonly getEntriesService: GetEntriesService, private router: Router,
-              private route: ActivatedRoute, private deleteItemService: DeleteItemService) { }
+    private route: ActivatedRoute, private deleteItemService: DeleteItemService, private httpClient: HttpClient,
+    private uploadFilesService: UploadFilesService) { }
 
   getEntries() {
     this.pathToAsk = this.location.path();
@@ -135,6 +139,41 @@ export class MainPageComponent implements OnInit {
   }
   rename() {
 
+  }
+
+  // Upload files
+  uploadFilesMenu: boolean = false;
+  showUploadFilesMenu() {
+    this.uploadFilesMenu = true;
+  }
+  hideUploadFilesMenu() {
+    this.uploadFilesMenu = false;
+  }
+
+  selectedFiles: File[] = [];
+
+  onFileSelected(event: any) {
+    this.selectedFiles = event.target.files;
+  }
+
+  uploadFiles() {
+    const formData = new FormData();
+
+    formData.append('Path', this.router.url.substr(1));
+
+    for (let i = 0; i < this.selectedFiles.length; ++i) {
+      formData.append('Files', this.selectedFiles[i]);
+    }
+
+    this.uploadFilesService.create(formData).subscribe(
+      (data: any) => {
+        this.hideUploadFilesMenu();
+        this.router.navigate([this.router.url]);
+      },
+      (error: any) => {
+        console.error(error);
+      }
+    );
   }
 
 }

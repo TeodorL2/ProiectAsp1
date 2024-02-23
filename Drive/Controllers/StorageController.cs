@@ -24,7 +24,7 @@ namespace Drive.Controllers
         [Authorize(Role.Admin, Role.User)]
         // [HttpPost("{*path}")]
         [HttpPost("create-base-dir")]
-        public IActionResult CreateBaseDir([FromBody] BaseDirCrUpRequestDto newBaseDir)
+        public async Task<IActionResult> CreateBaseDir([FromBody] BaseDirCrUpRequestDto newBaseDir)
         {
             User? authorizedUser = HttpContext.Items["AuthorizedUser"] as User;
 
@@ -32,7 +32,7 @@ namespace Drive.Controllers
 
             try
             {
-                _baseDirService.CreateBaseDirectory(username, newBaseDir);
+                await _baseDirService.CreateBaseDirectory(username, newBaseDir);
             }
             catch(BadUser ex)
             {
@@ -56,7 +56,7 @@ namespace Drive.Controllers
 
         [Authorize(Role.User, Role.Admin)]
         [HttpGet("{*path}")]
-        public IActionResult GetEntries([FromRoute] string path )
+        public async Task<IActionResult> GetEntries([FromRoute] string path )
         {
             User? authorizedUser = HttpContext.Items["AuthorizedUser"] as User;
 
@@ -66,7 +66,7 @@ namespace Drive.Controllers
             try
             {
                 // Console.WriteLine("Calea primita: " + path);
-                List<DirEntriesResponseDto> ent = _baseDirService.GetDirectoryEntries(path, username);
+                List<DirEntriesResponseDto> ent = await _baseDirService.GetDirectoryEntries(path, username);
                 return Ok(ent);
             }
             catch(NoSuchFileOrDirectory ex)
@@ -86,7 +86,7 @@ namespace Drive.Controllers
 
         [Authorize(Role.User, Role.Admin)]
         [HttpPut("{*path}")]
-        public IActionResult UpdateBaseDir([FromRoute] string path, [FromBody] BaseDirCrUpRequestDto req)
+        public async Task<IActionResult> UpdateBaseDir([FromRoute] string path, [FromBody] BaseDirCrUpRequestDto req)
         {
             User? authorizedUser = HttpContext.Items["AuthorizedUser"] as User;
 
@@ -100,7 +100,7 @@ namespace Drive.Controllers
 
             try
             {
-                _baseDirService.UpdateBaseDirectory(username, baseDir, req);
+                await _baseDirService.UpdateBaseDirectory(username, baseDir, req);
                 return Ok();
             }
             catch (NoSuchFileOrDirectory ex)
@@ -117,39 +117,11 @@ namespace Drive.Controllers
             }
         }
 
-        /*
-        [Authorize(Role.User, Role.Admin)]
-        [HttpDelete("{*path}")]
-        public IActionResult DeleteBaseDir([FromBody] BaseDirCrUpRequestDto req)
-        {
-            User? authorizedUser = HttpContext.Items["AuthorizedUser"] as User;
-
-            string? username = authorizedUser?.UserName;
-
-            try
-            {
-                _baseDirService.DeleteBaseDirectory(username, req);
-                return Ok();
-            }
-            catch (NoSuchFileOrDirectory ex)
-            {
-                return BadRequest(ex.Message);
-            }
-            catch (BadUser ex)
-            {
-                return Unauthorized(ex.Message);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
-        }
-        */
 
         [Authorize(Role.Admin, Role.User)]
         // [HttpPost("{*path}")]
         [HttpPost("create-dir")]
-        public IActionResult CreateDir([FromBody] CreateDirRequestDto req)
+        public async Task<IActionResult> CreateDir([FromBody] CreateDirRequestDto req)
         {
             User? authorizedUser = HttpContext.Items["AuthorizedUser"] as User;
 
@@ -157,7 +129,7 @@ namespace Drive.Controllers
 
             try
             {
-                _baseDirService.CreateDirectory(req.pathToCreateAt, username, req.DirName);
+                await _baseDirService.CreateDirectory(req.pathToCreateAt, username, req.DirName);
             }
             catch (BadUser ex)
             {
@@ -181,7 +153,7 @@ namespace Drive.Controllers
 
         [Authorize(Role.Admin, Role.User)]
         [HttpDelete("{*path}")]
-        public IActionResult DeleteItem([FromRoute] string path)
+        public async Task<IActionResult> DeleteItem([FromRoute] string path)
         {
             User? authorizedUser = HttpContext.Items["AuthorizedUser"] as User;
 
@@ -189,7 +161,7 @@ namespace Drive.Controllers
 
             try
             {
-                _baseDirService.DeleteAnyDirectoryOrFile(path, username);
+                await _baseDirService.DeleteAnyDirectoryOrFile(path, username);
                 return Ok();
             }
             catch(AccessDenied ex)
@@ -203,6 +175,34 @@ namespace Drive.Controllers
             catch (Exception ex)
             { 
                 return BadRequest(ex.Message); 
+            }
+        }
+
+        [Authorize(Role.Admin, Role.User)]
+        [HttpPost("upload-files")]
+        public async Task<IActionResult> UploadFiles([FromForm] UploadFilesDto req)
+        {
+
+            User? authorizedUser = HttpContext.Items["AuthorizedUser"] as User;
+
+            string? username = authorizedUser?.UserName;
+
+            try
+            {
+                await _baseDirService.UploadFiles(req.Path, username, req.Files);
+                return Ok();
+            }
+            catch (AccessDenied ex)
+            {
+                return Unauthorized(ex.Message);
+            }
+            catch (NoSuchFileOrDirectory ex)
+            {
+                return NotFound(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
             }
         }
     }

@@ -4,6 +4,7 @@ using Drive.Data.Enums;
 using Drive.Data.Exceptions;
 using Drive.Data.Models;
 using Drive.Repositories.GenericRepository;
+using Drive.Services.FileSystemService;
 using Drive.StorageManagement.StorageManagement;
 using Microsoft.EntityFrameworkCore;
 
@@ -11,34 +12,37 @@ namespace Drive.Repositories.BaseDirectoryRepository
 {
     public class BaseDirectoryRepository: GenericRepository<BaseDirectory>, IBaseDirectoryRepository
     {
-        private readonly IWebHostEnvironment _hostEnvironment;
-        private readonly string _storageBasePath;
-        private StorageManagement.StorageManagement.StorageManagement _storageManagement;
-        public BaseDirectoryRepository(DriveContext driveContext, IWebHostEnvironment hostEnvironment) : base(driveContext)
+        // private readonly IWebHostEnvironment _hostEnvironment;
+        // private readonly string _storageBasePath;
+        // private StorageManagement.StorageManagement.StorageManagement _storageManagement;
+
+        private readonly IFileSystemService _fileSystemService;
+        public BaseDirectoryRepository(DriveContext driveContext, IFileSystemService fileSystemService) : base(driveContext)
         {
-            _hostEnvironment = hostEnvironment;
-            _storageBasePath = _hostEnvironment.ContentRootPath;
-            _storageBasePath = Path.Combine(_storageBasePath, "StorageManagement", "StorageRoot");
-            _storageManagement = new StorageManagement.StorageManagement.StorageManagement(_storageBasePath);
+            // _hostEnvironment = hostEnvironment;
+            // _storageBasePath = _hostEnvironment.ContentRootPath;
+            // _storageBasePath = Path.Combine(_storageBasePath, "StorageManagement", "StorageRoot");
+            // _storageManagement = new StorageManagement.StorageManagement.StorageManagement(_storageBasePath);
+            _fileSystemService = fileSystemService;
         }
 
-        public void CreateBaseDirectory(string path, BaseDirectory baseDirectory)
+        public async Task CreateBaseDirectory(string path, BaseDirectory baseDirectory)
         {
-            _storageManagement.CreateDir(path, baseDirectory.DirectoryName);
+            await _fileSystemService.CreateDir(path, baseDirectory.DirectoryName);
 
             Create(baseDirectory);
         }
 
-        public void UpdateBaseDirectory(string path, BaseDirectory baseDirectory)
+        public async Task UpdateBaseDirectory(string path, BaseDirectory baseDirectory)
         {
-            _storageManagement.Rename(path, baseDirectory.DirectoryName);
+            await _fileSystemService.Rename(path, baseDirectory.DirectoryName);
 
             Update(baseDirectory);
         }
 
-        public void DeleteBaseDirectory(string path, BaseDirectory baseDirectory)
+        public async Task DeleteBaseDirectory(string path, BaseDirectory baseDirectory)
         {
-            _storageManagement.Delete(path);
+            await _fileSystemService.Delete(path);
 
             Delete(baseDirectory);
         }
@@ -60,42 +64,43 @@ namespace Drive.Repositories.BaseDirectoryRepository
 
         public async Task<Stream> DownloadDirOrFile(string path)
         {
-            return await _storageManagement.DownloadDirOrFile(path);
+            return await _fileSystemService.DownloadDirOrFile(path);
+            return null;
         }
 
         public async Task UploadFiles(string path, List<IFormFile> files)
         {
-            await _storageManagement.UploadFiles(path, files);
+            await _fileSystemService.UploadFiles(path, files);
         }
 
-        public List<EntryStruct> GetEntries(string path)
+        public async Task<List<EntryStruct>> GetEntries(string path)
         {
-            return _storageManagement.GetEntries(path);
+            return await _fileSystemService.GetEntries(path);
         }
 
-        public void RenameDirOrFile(string path, string newName)
+        public async Task RenameDirOrFile(string path, string newName)
         {
-            _storageManagement.Rename(path, newName);
+            await _fileSystemService.Rename(path, newName);
         }
 
-        public void CreateDirectory(string path, string dirName)
+        public async Task CreateDirectory(string path, string dirName)
         {
-            _storageManagement.CreateDir(path, dirName);
+            await _fileSystemService.CreateDir(path, dirName);
         }
 
-        public void DeleteDirectoryOrFile(string path)
+        public async Task DeleteDirectoryOrFile(string path)
         {
-            _storageManagement.Delete(path);
+            await _fileSystemService.Delete(path);
         }
 
-        public void CreateUserRootDir(string username)
+        public async Task CreateUserRootDir(string username)
         {
-            _storageManagement.CreateDir("", username);
+            await _fileSystemService.CreateDir("", username);
         }
 
-        public void DeleteUserRootDir(string username)
+        public async Task DeleteUserRootDir(string username)
         {
-            _storageManagement.Delete(username);
+            await _fileSystemService.Delete(username);
         }
 
         public void ChangeAccessType(Guid userId, Guid baseDirId, AccessType accessType, bool grantOrRevoke)

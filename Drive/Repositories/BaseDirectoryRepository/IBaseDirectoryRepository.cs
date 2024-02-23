@@ -8,9 +8,9 @@ namespace Drive.Repositories.BaseDirectoryRepository
 {
     public interface IBaseDirectoryRepository: IGenericRepository<BaseDirectory>
     {
-        void CreateBaseDirectory(string path, BaseDirectory baseDirectory);
-        void UpdateBaseDirectory(string path, BaseDirectory baseDirectory);
-        void DeleteBaseDirectory(string path, BaseDirectory baseDirectory);
+        Task CreateBaseDirectory(string path, BaseDirectory baseDirectory);
+        Task UpdateBaseDirectory(string path, BaseDirectory baseDirectory);
+        Task DeleteBaseDirectory(string path, BaseDirectory baseDirectory);
 
         BaseDirectory? GetByDirNameAndAuthor(string dirname, Guid author);
 
@@ -22,17 +22,17 @@ namespace Drive.Repositories.BaseDirectoryRepository
 
         Task UploadFiles(string path, List<IFormFile> files);
 
-        List<EntryStruct> GetEntries(string path);
+        Task<List<EntryStruct>> GetEntries(string path);
 
-        void RenameDirOrFile(string path, string newName);
+        Task RenameDirOrFile(string path, string newName);
 
-        void CreateDirectory(string path, string dirName);
+        Task CreateDirectory(string path, string dirName);
 
-        void DeleteDirectoryOrFile(string path);
+        Task DeleteDirectoryOrFile(string path);
 
         // at user register
-        void CreateUserRootDir(string username);
-        void DeleteUserRootDir(string username);
+        Task CreateUserRootDir(string username);
+        Task DeleteUserRootDir(string username);
 
         void ChangeAccessType(Guid userId, Guid baseDirId, AccessType accessType, bool grantOrRevoke);
 

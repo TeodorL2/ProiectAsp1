@@ -6,11 +6,11 @@ namespace Drive.Services.BaseDirService
 {
     public interface IBaseDirService
     {
-        void CreateBaseDirectory(string? userName, BaseDirCrUpRequestDto req);
+        Task CreateBaseDirectory(string? userName, BaseDirCrUpRequestDto req);
 
-        void UpdateBaseDirectory(string? userName, string oldName, BaseDirCrUpRequestDto req);
+        Task UpdateBaseDirectory(string? userName, string oldName, BaseDirCrUpRequestDto req);
 
-        void DeleteBaseDirectory(string? userName, string dirName);
+        Task DeleteBaseDirectory(string? userName, string dirName);
 
         AccessType GetAccessType(string path, string? username);
 
@@ -18,15 +18,15 @@ namespace Drive.Services.BaseDirService
 
         Task UploadFiles(string path, string? username, List<IFormFile> files);
 
-        List<DirEntriesResponseDto> GetDirectoryEntries(string path, string? username);
+        Task<List<DirEntriesResponseDto>> GetDirectoryEntries(string path, string? username);
 
-        void RenameDirOrFile(string path, string? username, string newName);
+        Task RenameDirOrFile(string path, string? username, string newName);
 
-        void CreateDirectory(string path, string? username, string dirName);
+        Task CreateDirectory(string path, string? username, string dirName);
 
-        void DeleteDirectoryOrFile(string path, string? username);
+        Task DeleteDirectoryOrFile(string path, string? username);
 
-        void DeleteAnyDirectoryOrFile(string path, string? username);
+        Task DeleteAnyDirectoryOrFile(string path, string? username);
 
         // Access modification
         BaseDirectory? GetByDirNameAndAuthorFromPath(string path);

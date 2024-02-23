@@ -3,7 +3,7 @@
   <button mat-button (click)="navigatePrevDir()">Previous folder</button>
   <button mat-button *ngIf="!isUserDir()" (click)="createDir()">Create Directory</button>
   <button mat-button *ngIf="isUserDir()" (click)="createBaseDir()">Create Base Directory</button>
-  <button mat-button *ngIf="!isUserDir()">Upload</button>
+  <button mat-button *ngIf="!isUserDir()" (click)="showUploadFilesMenu()">Upload</button>
   <button mat-button (click)="renameMenu()">Rename this</button>
   <button mat-button (click)="deleteThisConsent()">Delete this</button>
   <button mat-button *ngIf="isBaseDir()">Give access to this</button>
@@ -37,3 +37,9 @@
   </div>
 </div>
 
+
+<div *ngIf="uploadFilesMenu">
+  <input type="file" multiple (change)="onFileSelected($event)">
+  <button mat-button (click)="uploadFiles()">Upload</button>
+  <button mat-button (click)="hideUploadFilesMenu()">Cancel</button>
+</div>

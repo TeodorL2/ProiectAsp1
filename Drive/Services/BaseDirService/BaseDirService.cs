@@ -7,6 +7,7 @@ using Drive.UnitOfWork;
 using Microsoft.AspNetCore.Http.HttpResults;
 using System.Diagnostics.Eventing.Reader;
 using System.IO.Compression;
+using System.Runtime.CompilerServices;
 using System.Xml;
 
 namespace Drive.Services.BaseDirService
@@ -21,7 +22,7 @@ namespace Drive.Services.BaseDirService
         }
 
 
-        public void CreateBaseDirectory(string? userName, BaseDirCrUpRequestDto req)
+        public async Task CreateBaseDirectory(string? userName, BaseDirCrUpRequestDto req)
         {
             var user = _unitOfWork.UserRepository.FindByUserName(userName);
             if (user == null)
@@ -35,12 +36,12 @@ namespace Drive.Services.BaseDirService
                 Author = user.Id,
                 IsPublic = req.IsPublic
             };
-            _unitOfWork.BaseDirectoryRepository.CreateBaseDirectory(userName, baseDirToCreate);
+            await _unitOfWork.BaseDirectoryRepository.CreateBaseDirectory(userName, baseDirToCreate);
 
             _unitOfWork.Save();
         }
 
-        public void UpdateBaseDirectory(string? userName, string oldName, BaseDirCrUpRequestDto req)
+        public async Task UpdateBaseDirectory(string? userName, string oldName, BaseDirCrUpRequestDto req)
         {
             var user = _unitOfWork.UserRepository.FindByUserName(userName);
             if (user == null)
@@ -63,12 +64,12 @@ namespace Drive.Services.BaseDirService
                 IsPublic = req.IsPublic
             };*/
             string path = Path.Combine(userName, oldName);
-            _unitOfWork.BaseDirectoryRepository.UpdateBaseDirectory(path, baseDir);
+            await _unitOfWork.BaseDirectoryRepository.UpdateBaseDirectory(path, baseDir);
 
             _unitOfWork.Save();
         }
 
-        public void DeleteBaseDirectory(string? userName, string dirName)
+        public async Task DeleteBaseDirectory(string? userName, string dirName)
         {
             var user = _unitOfWork.UserRepository.FindByUserName(userName);
             if (user == null)
@@ -82,7 +83,7 @@ namespace Drive.Services.BaseDirService
                 // throw new NoSuchFileOrDirectory("path not found");
 
             string path = Path.Combine(userName, dirName);
-            _unitOfWork.BaseDirectoryRepository.DeleteBaseDirectory(path, baseDir);
+            await _unitOfWork.BaseDirectoryRepository.DeleteBaseDirectory(path, baseDir);
 
             _unitOfWork.Save();
         }
@@ -195,14 +196,14 @@ namespace Drive.Services.BaseDirService
             await _unitOfWork.BaseDirectoryRepository.UploadFiles(path, files);
         }
 
-        public List<DirEntriesResponseDto> GetDirectoryEntries(string path, string? username)
+        public async Task<List<DirEntriesResponseDto>> GetDirectoryEntries(string path, string? username)
         {
             List<DirEntriesResponseDto> response = new List<DirEntriesResponseDto>();
 
             var accessType = GetAccessType(path, username);
             if ((accessType & AccessType.Read) != 0)
             {
-                List<EntryStruct> entries = _unitOfWork.BaseDirectoryRepository.GetEntries(path);
+                List<EntryStruct> entries = await _unitOfWork.BaseDirectoryRepository.GetEntries(path);
                 foreach (var entry in entries)
                 {
                     response.Add(new DirEntriesResponseDto
@@ -220,7 +221,7 @@ namespace Drive.Services.BaseDirService
 
         }
 
-        public void RenameDirOrFile(string path, string? username, string newName)
+        public async Task RenameDirOrFile(string path, string? username, string newName)
         {
             var accessType = GetAccessType(path, username);
             if ((accessType & AccessType.Write) == 0)
@@ -229,10 +230,10 @@ namespace Drive.Services.BaseDirService
             if (PathIsNotBaseDir(path) == false)
                 throw new AccessDenied("base directory can not be modified from here");
 
-            _unitOfWork.BaseDirectoryRepository.RenameDirOrFile(path, newName);
+            await _unitOfWork.BaseDirectoryRepository.RenameDirOrFile(path, newName);
         }
 
-        public void CreateDirectory(string path, string? username, string dirName)
+        public async Task CreateDirectory(string path, string? username, string dirName)
         {
             var accessType = GetAccessType(path, username);
             if ((accessType & AccessType.Write) == 0)
@@ -240,10 +241,10 @@ namespace Drive.Services.BaseDirService
             if (PathIsNotUserDir(path) == false)
                 throw new AccessDenied("base directory can not be created from here");
 
-            _unitOfWork.BaseDirectoryRepository.CreateDirectory(path, dirName);
+            await _unitOfWork.BaseDirectoryRepository.CreateDirectory(path, dirName);
         }
 
-        public void DeleteDirectoryOrFile(string path, string? username)
+        public async Task DeleteDirectoryOrFile(string path, string? username)
         {
             var accessType = GetAccessType(path, username);
             if ((accessType & AccessType.Write) == 0)
@@ -251,10 +252,10 @@ namespace Drive.Services.BaseDirService
             if (PathIsNotBaseDir(path) == false)
                 throw new AccessDenied("base directory can not be deleted from here");
 
-            _unitOfWork.BaseDirectoryRepository.DeleteDirectoryOrFile(path);
+            await _unitOfWork.BaseDirectoryRepository.DeleteDirectoryOrFile(path);
         }
 
-        public void DeleteAnyDirectoryOrFile(string path, string? username)
+        public async Task DeleteAnyDirectoryOrFile(string path, string? username)
         {
             var accessType = GetAccessType(path, username);
             if ((accessType & AccessType.Write) == 0)
@@ -264,11 +265,11 @@ namespace Drive.Services.BaseDirService
                 string[] pathParts = path.Split('/');
                 if (pathParts.Length < 2)
                     throw new NoSuchFileOrDirectory("path is not base directory");
-                DeleteBaseDirectory(username, pathParts[1]);
+                await DeleteBaseDirectory(username, pathParts[1]);
             }
             else
             {
-                DeleteDirectoryOrFile(path, username);
+                await DeleteDirectoryOrFile(path, username);
             }
         }
 

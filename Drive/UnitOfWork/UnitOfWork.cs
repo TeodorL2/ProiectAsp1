@@ -1,6 +1,7 @@
 ﻿using Drive.Data;
 using Drive.Repositories.BaseDirectoryRepository;
 using Drive.Repositories.UserRepository;
+using Drive.Services.FileSystemService;
 
 namespace Drive.UnitOfWork
 {
@@ -11,11 +12,13 @@ namespace Drive.UnitOfWork
         private IUserRepository _userRepository;
         private IBaseDirectoryRepository _baseDirectoryRepository;
         private readonly IWebHostEnvironment _hostEnvironment;
+        private readonly IFileSystemService _fileSystemService;
 
-        public UnitOfWork(DriveContext driveContext, IWebHostEnvironment hostEnvironment)
+        public UnitOfWork(DriveContext driveContext, IWebHostEnvironment hostEnvironment, IFileSystemService fileSystemService)
         {
             _driveContext = driveContext;
             _hostEnvironment = hostEnvironment;
+            _fileSystemService = fileSystemService;
         }
 
         public IUserRepository UserRepository
@@ -37,7 +40,7 @@ namespace Drive.UnitOfWork
             {
                 if (_baseDirectoryRepository == null)
                 {
-                    _baseDirectoryRepository = new BaseDirectoryRepository(_driveContext, _hostEnvironment);
+                    _baseDirectoryRepository = new BaseDirectoryRepository(_driveContext, _fileSystemService);
                     return _baseDirectoryRepository;
                 }
                 else { return _baseDirectoryRepository; }
